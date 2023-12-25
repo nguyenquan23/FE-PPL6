@@ -51,7 +51,8 @@
 import axios from "axios";
 
 const axiosClient = axios.create({
-  baseURL: "http://44.204.13.30",
+ // baseURL: "http://44.204.13.30",
+  baseURL: "http://127.0.0.1:8000",
   headers: {
     "Content-Type": "multipart/form-data",
   },

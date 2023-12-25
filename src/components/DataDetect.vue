@@ -74,28 +74,68 @@
         <p>Hãy đảm bảo bạn đã kiểm tra đủ thông tin</p>
         <p>Tiếp tục thôi.</p>
         <div class="buttons-group">
-            <button class="button-back">BACK</button>
-            <button class="button-save">SAVE</button>
+            <button  class="button-back">BACK</button>
+            <button @click="save">SAVE</button>
         </div>
     </div>
 </template>
 <script>
 import { useOwnerStore } from '../store';
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
+import axios from 'axios';
 
 const ownerStore = useOwnerStore();
 
 export default {
-   
-    
   setup() {
-    
     const ownerData = computed(() => ownerStore.getOwner);
-    console.log(ownerStore.getOwner)
-   
+    const saveData = ref([]);
 
-    return {       
+    // Watch for changes in ownerData and update saveData
+    watch(ownerData, (newValue) => {
+      saveData.value = newValue;
+    });
+
+    const save = async () => {
+      try {
+        console.log(saveData.value);
+        console.log(ownerData);
+
+        const requestData = {
+          owner: ownerData.value[11],
+          yob: ownerData.value[0],
+          idcard: ownerData.value[9],
+          owneraddress: ownerData.value[10],
+          idcerti: ownerData.value[7],
+          landplot: "",
+          landaddress: ownerData.value[6],
+          acreage: ownerData.value[5],
+          uses: ownerData.value[4],
+          dateuse: ownerData.value[3],
+          originuse: ownerData.value[2],
+          oldtree: "No",
+          note: "This is another sample note",
+          changecontent: "Updated landplot information",
+          image: ownerData.value[12],
+          house: "No",
+          constructionorther: "No",
+        };
+
+        const response = await axios.post(
+          'http://localhost:8080/auth/saveLandCertificate',
+          requestData
+        );
+
+        console.log(response.data);
+      } catch (error) {
+        console.error('Error saving land certificate:', error);
+      }
+    };
+
+    return {
       ownerData,
+      saveData,
+      save,
     };
   },
 };
